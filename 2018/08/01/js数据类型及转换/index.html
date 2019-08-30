@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="记录和分享知识"><title>js数据类型及转换问题 | steak</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">js数据类型及转换问题</h1><a id="logo" href="/.">steak</a><p class="description">steak的个人博客</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">js数据类型及转换问题</h1><div class="post-meta">Aug 1, 2018</div><div class="post-content"><pre><code>众所周知，javascript是一种弱类型语言，它不像java或C语言在声明一个变量的时候，需要指定变量的类型。JavaScript只需要使用var声明，并随着使用，变量的类型也会发生变化。这一特点也使得JavaScript简单易用。但是这样声明一个变量并不严谨，而且它可能在我们不需要的情况下发生一些类型转换，使得代码bug丛生，因此，弄懂js的数据类型及类型转换规则可以避免错误的发生。</code></pre><blockquote>
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="记录和分享知识"><title>js数据类型及转换问题 | steak</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">js数据类型及转换问题</h1><a id="logo" href="/.">steak</a><p class="description">steak的个人博客</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">js数据类型及转换问题</h1><div class="post-meta">Aug 1, 2018</div><div class="post-content"><pre><code>众所周知，javascript是一种弱类型语言，它不像java或C语言在声明一个变量的时候，需要指定变量的
+类型。JavaScript只需要使用var声明，并随着使用，变量的类型也会发生变化。这一特点也使得
+JavaScript简单易用。但是这样声明一个变量并不严谨，而且它可能在我们不需要的情况下发生一些类
+型转换，使得代码bug丛生，因此，弄懂js的数据类型及类型转换规则可以避免错误的发生。</code></pre><blockquote>
 <h1 id="js数据类型及转换"><a href="#js数据类型及转换" class="headerlink" title="js数据类型及转换"></a>js数据类型及转换</h1></blockquote>
 <h3 id="typeof操作符"><a href="#typeof操作符" class="headerlink" title="typeof操作符"></a>typeof操作符</h3><h4 id="由于JavaScript是弱类型语言，在声明的时候不需要指明数据类型，js提供了检测数据类型的操作符typeof（）。对一个值使用typyof操作符可以返回对应的字符串。"><a href="#由于JavaScript是弱类型语言，在声明的时候不需要指明数据类型，js提供了检测数据类型的操作符typeof（）。对一个值使用typyof操作符可以返回对应的字符串。" class="headerlink" title="由于JavaScript是弱类型语言，在声明的时候不需要指明数据类型，js提供了检测数据类型的操作符typeof（）。对一个值使用typyof操作符可以返回对应的字符串。"></a>由于JavaScript是弱类型语言，在声明的时候不需要指明数据类型，js提供了检测数据类型的操作符typeof（）。对一个值使用typyof操作符可以返回对应的字符串。</h4><pre><code> &quot;undefined&quot; ——如果这个值未定义；
  &quot;boolean&quot; ——如果这个值是布尔值；
@@ -13,35 +16,41 @@
 <h2 id="一-数据类型"><a href="#一-数据类型" class="headerlink" title="一.数据类型"></a>一.数据类型</h2></blockquote>
 <h3 id="1-undefined类型"><a href="#1-undefined类型" class="headerlink" title="1.undefined类型"></a>1.undefined类型</h3><h4 id="Undefined-类型只有一个值，即特殊的-undefined-。在使用-var-声明变量但未对其加以初始化时，这个变量的值就是-undefined"><a href="#Undefined-类型只有一个值，即特殊的-undefined-。在使用-var-声明变量但未对其加以初始化时，这个变量的值就是-undefined" class="headerlink" title="Undefined 类型只有一个值，即特殊的 undefined 。在使用 var 声明变量但未对其加以初始化时，这个变量的值就是 undefined"></a>Undefined 类型只有一个值，即特殊的 undefined 。在使用 var 声明变量但未对其加以初始化时，这个变量的值就是 undefined</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a;</span><br><span class="line"><span class="built_in">console</span>.log(a);  <span class="comment">//undefined</span></span><br></pre></td></tr></table></figure>
 
-<p>  声明变量但未初始化会提示undefined，但变量未声明会报错not defined。但是使用typeof检测时两者结果均为undefined<br> <figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var a;</span><br><span class="line"><span class="built_in">console</span>.log(a)          <span class="regexp">//</span><span class="literal">undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> b)   <span class="regexp">//</span><span class="literal">undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> a)   <span class="regexp">//</span><span class="literal">undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(b)          <span class="regexp">//</span>b <span class="keyword">is</span> <span class="keyword">not</span> defined</span><br></pre></td></tr></table></figure></p>
+<p>  声明变量但未初始化会提示undefined，但变量未声明会报错not defined。但是使用typeof检测时两者<br>  结果均为undefined<br> <figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var a;</span><br><span class="line"><span class="built_in">console</span>.log(a)          <span class="regexp">//</span><span class="literal">undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> b)   <span class="regexp">//</span><span class="literal">undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> a)   <span class="regexp">//</span><span class="literal">undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(b)          <span class="regexp">//</span>b <span class="keyword">is</span> <span class="keyword">not</span> defined</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <h4 id="注意：虽然未初始化的变量会被自动赋予undefined，但是应尽可能的显式的初始化变量。这样在typeof返回undefined时我们就知道这是一个未声明的变量，而不是未初始化。"><a href="#注意：虽然未初始化的变量会被自动赋予undefined，但是应尽可能的显式的初始化变量。这样在typeof返回undefined时我们就知道这是一个未声明的变量，而不是未初始化。" class="headerlink" title="注意：虽然未初始化的变量会被自动赋予undefined，但是应尽可能的显式的初始化变量。这样在typeof返回undefined时我们就知道这是一个未声明的变量，而不是未初始化。"></a>注意：虽然未初始化的变量会被自动赋予undefined，但是应尽可能的显式的初始化变量。这样在typeof返回undefined时我们就知道这是一个未声明的变量，而不是未初始化。</h4></blockquote>
 <hr>
 <blockquote>
-<h2 id="2-null类型"><a href="#2-null类型" class="headerlink" title="2.null类型"></a>2.null类型</h2><pre><code>Null 类型是第二个只有一个值的数据类型，这个特殊的值是 null 。从逻辑角度来看，null 值表示一个空对象指
-针，而这也正是使用 typeof 操作符检测 null 值时会返回 &quot;object&quot; 的原因
+<h2 id="2-null类型"><a href="#2-null类型" class="headerlink" title="2.null类型"></a>2.null类型</h2><pre><code>Null 类型是第二个只有一个值的数据类型，这个特殊的值是 null 。从逻辑角度来看，null 值表示
+一个空对象指针，而这也正是使用 typeof 操作符检测 null 值时会返回 &quot;object&quot; 的原因
 var a=null;
 console.log(typeof a);  //object
-如果定义的变量准备在将来用于保存对象，那么最好将该变量初始化为 null 而不是其他值。这样一来，只要直接
-检查 null 值就可以知道相应的变量是否已经保存了一个对象的引用</code></pre><p>null是派生自undefined的，在用（==）检测时它们的值是相同的</p>
+如果定义的变量准备在将来用于保存对象，那么最好将该变量初始化为 null 而不是其他值。这样一来
+，只要直接检查 null 值就可以知道相应的变量是否已经保存了一个对象的引用</code></pre><p>null是派生自undefined的，在用（==）检测时它们的值是相同的</p>
 </blockquote>
 <hr>
 <blockquote>
 <h2 id="3-boolean类型"><a href="#3-boolean类型" class="headerlink" title="3.boolean类型"></a>3.boolean类型</h2><pre><code>该类型只有两个字面值： true 和 false 。
 这两个值与数字值不是一回事，因此 true 不一定等于 1，而 false 也不一定等于 0</code></pre></blockquote>
-<p>各种数据类型及其对<br>应的转换规则<br>数据类型|数据类型|转换为false的值<br>:–|:–:|:–:<br>Boolean|true|false<br>String|任何非空字符串|”” （空字符串）<br>Number|任何非零数字值(包括Infinity)|0和NaN<br>Object|任何对象|null<br>Undefined |n/a①|undefined</p>
+<pre><code>各种数据类型及其对应的转换规则
+
+|数据类型|数据类型|转换为false的值|
+|:--|:--:|:--:|
+|Boolean|true|false|
+|String|任何非空字符串|&quot;&quot; （空字符串）|
+|Number|任何非零数字值(包括Infinity)|0和NaN|
+|Object|任何对象|null|
+|Undefined |n/a①|undefined|
+&gt; ①: n/a（或 N/A），是 not applicable的缩写，意思是“不适用”。</code></pre><hr>
 <blockquote>
-<p>①: n/a（或 N/A），是 not applicable的缩写，意思是“不适用”。</p>
-</blockquote>
-<hr>
-<blockquote>
-<h2 id="4-number数据类型"><a href="#4-number数据类型" class="headerlink" title="4.number数据类型"></a>4.number数据类型</h2><pre><code>number数据类型是js的基本数据类型之一，使用 IEEE754 格式来表示整数和浮点数值浮点数值计算会产生舍入
-误差，这是使用基于IEEE754 数值的浮点计算的通病</code></pre><ul>
-<li>NaN<br>  即非数值（Not a Number）是一个特殊的数值，这个数值用于表示一个本来要返回数值的操作数<br>  未返回数值的情况。在其他编程语言中，任何数值除以 0都会导致错误，<br>  从而停止代码执行。但在 ECMAScript中，任何数值除以 0会返回 NaN<h4 id="注意：任何数除以0都会返回NaN。与任何值都不相等，包括NaN。利用isNaN（）可以检测一个值是否为NaN"><a href="#注意：任何数除以0都会返回NaN。与任何值都不相等，包括NaN。利用isNaN（）可以检测一个值是否为NaN" class="headerlink" title="注意：任何数除以0都会返回NaN。与任何值都不相等，包括NaN。利用isNaN（）可以检测一个值是否为NaN"></a>注意：任何数除以0都会返回NaN。与任何值都不相等，包括NaN。利用isNaN（）可以检测一个值是否为NaN</h4><pre><code>alert(NaN == NaN); //false</code></pre>isNaN()同样适用于对象。在基于对象调用 isNaN()<br>函数时，会首先调用对象的 valueOf() 方法，然后确定该方法返回的值是否可以转<br>换为数值。如果不能，则基于这个返回值再调用 toString() 方法，再测试返回值。</li>
+<h2 id="4-number数据类型"><a href="#4-number数据类型" class="headerlink" title="4.number数据类型"></a>4.number数据类型</h2><pre><code>number数据类型是js的基本数据类型之一，使用 IEEE754 格式来表示整数和浮点数值浮点数值计算
+会产生舍入误差，这是使用基于IEEE754 数值的浮点计算的通病</code></pre><ul>
+<li>NaN<br>  即非数值（Not a Number）是一个特殊的数值，这个数值用于表示一个本来要返回数值的操作数未返<br>  回数值的情况。在其他编程语言中，任何数值除以 0都会导致错误，从而停止代码执行。但在 ECMAS<br>  cript中，任何数值除以 0会返回 NaN<h4 id="注意：任何数除以0都会返回NaN。与任何值都不相等，包括NaN。利用isNaN（）可以检测一个值是否为NaN"><a href="#注意：任何数除以0都会返回NaN。与任何值都不相等，包括NaN。利用isNaN（）可以检测一个值是否为NaN" class="headerlink" title="注意：任何数除以0都会返回NaN。与任何值都不相等，包括NaN。利用isNaN（）可以检测一个值是否为NaN"></a>注意：任何数除以0都会返回NaN。与任何值都不相等，包括NaN。利用isNaN（）可以检测一个值是否为NaN</h4>  alert(NaN == NaN); //false<br>  isNaN()同样适用于对象。在基于对象调用 isNaN()<br>  函数时，会首先调用对象的 valueOf() 方法，然后确定该方法返回的值是否可以转<br>  换为数值。如果不能，则基于这个返回值再调用 toString() 方法，再测试返回值。</li>
 </ul>
 </blockquote>
-<h3 id="number数值转换"><a href="#number数值转换" class="headerlink" title="number数值转换"></a>number数值转换</h3><pre><code>js中有3 个函数可以把非数值转换为数值： Number() 、 parseInt() 和 parseFloat() 。第一个函数，
-即转型函数 Number() 可以用于任何数据类型，而另两个函数则专  门用于把字符串转换成数值。</code></pre><h3 id="1-Number"><a href="#1-Number" class="headerlink" title="1.Number()"></a>1.Number()</h3><pre><code>Number() 函数的转换规则如下。</code></pre><ul>
+<h3 id="number数值转换"><a href="#number数值转换" class="headerlink" title="number数值转换"></a>number数值转换</h3><pre><code>js中有3 个函数可以把非数值转换为数值： Number() 、 parseInt() 和 parseFloat() 。第一
+个函数，即转型函数 Number() 可以用于任何数据类型，而另两个函数则专  门用于把字符串转换
+成数值。</code></pre><h3 id="1-Number"><a href="#1-Number" class="headerlink" title="1.Number()"></a>1.Number()</h3><h4 id="Number-函数的转换规则如下。"><a href="#Number-函数的转换规则如下。" class="headerlink" title="Number() 函数的转换规则如下。"></a>Number() 函数的转换规则如下。</h4><ul>
 <li>Boolean值    true 和 false 将分别被转换为1和0。</li>
 <li>数字         只是简单的传入和返回。</li>
 <li>null         返回 0。</li>
@@ -58,62 +67,61 @@ console.log(typeof a);  //object
 
 </li>
 </ul>
-<h3 id="2-parseInt"><a href="#2-parseInt" class="headerlink" title="2.parseInt()"></a>2.parseInt()</h3><pre><code>Number() 函数在转换字符串时比较复杂而且不够合理，因此在处理整数的时候更常用的是parseInt() 函数。 
-parseInt() 函数在转换字符串时，会忽略字符串前面的空格，直至找到第一个非空格字符。如果第一个字符不  
-是数字，字符或者负号， parseInt()就会返回 NaN ；也就是说，用 parseInt() 转换空字符串会返 回 NaN 
-（ Number() 对空字符返回 0）。如果第一个字符是数字字符， parseInt() 会继续解析第二个字符，  
-直到解析完所有后续字符或者遇到了一个非数字字符。例如， &quot;1234blue&quot; 会被转换为 1234，因为     &quot;blue&quot; 
-会被完全忽略。类似地， &quot;22.5&quot;会被转换为 22，因为小数点并不是有效的数字字符。
-var num1 = parseInt(&quot;1234blue&quot;);    // 1234
-var num2 = parseInt(&quot;&quot;);            // NaN
-var num3 = parseInt(&quot;0xA&quot;);         // 10（十六进制数）
-var num4 = parseInt(22.5);          // 22
-var num5 = parseInt(&quot;070&quot;);         // 56（八进制数）
-var num6 = parseInt(&quot;70&quot;);          // 70（十进制数）
-var num7 = parseInt(&quot;0xf&quot;);         // 15（十六进制数）</code></pre><blockquote>
+<h3 id="2-parseInt"><a href="#2-parseInt" class="headerlink" title="2.parseInt()"></a>2.parseInt()</h3><ul>
+<li>Number() 函数在转换字符串时比较复杂而且不够合理，因此在处理整数的时候更常用的是<br>parseInt()函数。 </li>
+<li>parseInt() 函数在转换字符串时，会忽略字符串前面的空格，直至找到第一个非空格字符。</li>
+<li>如果第一个字符不  是数字，字符或者负号， parseInt()就会返回 NaN ；也就是说，用<br>parseInt()转换空字符串会返 回 NaN （ Number() 对空字符返回 0）。</li>
+<li>如果第一个字符是数字字符， parseInt()会继续解析第二个字符，  直到解析完所有后续<br>字符或者遇到了一个非数字字符。例如， “1234blue” 会被转换为 1234，因为”blue” 会<br>被完全忽略。</li>
+<li>类似地， “22.5”会被转换为 22，因为小数点并不是有效的数字字符。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> num1 = <span class="built_in">parseInt</span>(<span class="string">"1234blue"</span>);    <span class="comment">// 1234</span></span><br><span class="line"><span class="keyword">var</span> num2 = <span class="built_in">parseInt</span>(<span class="string">""</span>);            <span class="comment">// NaN</span></span><br><span class="line"><span class="keyword">var</span> num3 = <span class="built_in">parseInt</span>(<span class="string">"0xA"</span>);         <span class="comment">// 10（十六进制数）</span></span><br><span class="line"><span class="keyword">var</span> num4 = <span class="built_in">parseInt</span>(<span class="number">22.5</span>);          <span class="comment">// 22</span></span><br><span class="line"><span class="keyword">var</span> num5 = <span class="built_in">parseInt</span>(<span class="string">"070"</span>);         <span class="comment">// 56（八进制数）</span></span><br><span class="line"><span class="keyword">var</span> num6 = <span class="built_in">parseInt</span>(<span class="string">"70"</span>);          <span class="comment">// 70（十进制数）</span></span><br><span class="line"><span class="keyword">var</span> num7 = <span class="built_in">parseInt</span>(<span class="string">"0xf"</span>);         <span class="comment">// 15（十六进制数）</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
 <p>parseInt()可以指定一个参数，作为转换数字类型的进制</p>
 <ul>
 <li>var num1 = parseInt(“AF”, 16); //175</li>
 <li>var num2 = parseInt(“AF”); //NaN</li>
 </ul>
 </blockquote>
-<h3 id="3-parseFloat"><a href="#3-parseFloat" class="headerlink" title="3.parseFloat()"></a>3.parseFloat()</h3><pre><code>与 parseInt() 函数类似， parseFloat() 也是从第一个字符（位置 0）开始解析每个字符。而且
-也是一直解析到字符串末尾，或者解析到遇见一个无效的浮点数字字符为止。也就是说，字符串中的第
-一个小数点是有效的，而第二个小数点就是无效的了，因此它后面的字符串将被忽略。举例来说，
-&quot;22.34.5&quot; 将会被转换为 22.34。</code></pre><blockquote>
-<p> parseFloat() 只解析十进制值，它没有用第二个参数指定基<br>数的用法。最后还要注意一点：如果字符串包含的是一个可解析为整数的数（没有小数点，或者小数点后<br>都是零）， parseFloat() 会返回整数。</p>
+<h3 id="3-parseFloat"><a href="#3-parseFloat" class="headerlink" title="3.parseFloat()"></a>3.parseFloat()</h3><ul>
+<li>与 parseInt() 函数类似， parseFloat() 也是从第一个字符（位置 0）开始解析每个字符。<br>而且也是一直解析到字符串末尾，或者解析到遇见一个无效的浮点数字字符为止。</li>
+<li>也就是说，字符串中的第一个小数点是有效的，而第二个小数点就是无效的了，因此它后面的字<br>符串将被忽略。举例来说，”22.34.5” 将会被转换为 22.34。</li>
+</ul>
+<blockquote>
+<p> parseFloat() 只解析十进制值，它没有用第二个参数指定基<br>数的用法。最后还要注意一点：如果字符串包含的是一个可解析为整数的数（没有小数点，或者小<br>数点后都是零）， parseFloat() 会返回整数。</p>
 </blockquote>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> num1 = <span class="built_in">parseFloat</span>(<span class="string">"1234blue"</span>); <span class="comment">//1234 （整数）</span></span><br><span class="line"><span class="keyword">var</span> num2 = <span class="built_in">parseFloat</span>(<span class="string">"0xA"</span>); <span class="comment">//0</span></span><br><span class="line"><span class="keyword">var</span> num3 = <span class="built_in">parseFloat</span>(<span class="string">"22.5"</span>); <span class="comment">//22.5</span></span><br><span class="line"><span class="keyword">var</span> num4 = <span class="built_in">parseFloat</span>(<span class="string">"22.34.5"</span>); <span class="comment">//22.34</span></span><br><span class="line"><span class="keyword">var</span> num5 = <span class="built_in">parseFloat</span>(<span class="string">"0908.5"</span>); <span class="comment">//908.5</span></span><br><span class="line"><span class="keyword">var</span> num6 = <span class="built_in">parseFloat</span>(<span class="string">"3.125e7"</span>); <span class="comment">//31250000</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="5-String-类型"><a href="#5-String-类型" class="headerlink" title="5.String 类型"></a>5.String 类型</h2><pre><code>String 类型用于表示由零或多个 16 位 Unicode 字符组成的字符序列，即字符串。</code></pre><h3 id="字符串的转换"><a href="#字符串的转换" class="headerlink" title="字符串的转换"></a>字符串的转换</h3><ul>
-<li><h4 id="要把一个值转换为一个字符串有两种方式。第一种是使用几乎每个值都有的-toString-方法"><a href="#要把一个值转换为一个字符串有两种方式。第一种是使用几乎每个值都有的-toString-方法" class="headerlink" title="要把一个值转换为一个字符串有两种方式。第一种是使用几乎每个值都有的           toString() 方法"></a>要把一个值转换为一个字符串有两种方式。第一种是使用几乎每个值都有的           toString() 方法</h4><pre><code>var age = 11;
-var ageAsString = age.toString(); // 字符&quot;11&quot;
-var found = true;
-var foundAsString = found.toString(); // 字符串&quot;true&quot;</code></pre><blockquote>
-<p>数值、布尔值、对象和字符串值（没错，每个字符串也都有一个 toString() 方法，该方法返回字<br>符串的一个副本）都有 toString() 方法。但 null 和 undefined 值没有这个方法。</p>
-</blockquote>
-<p>  多数情况下，调用 toString() 方法不必传递参数。但是，在调用数值的 toString() 方法时，可<br>  以传递一个参数：输出数值的基数。<br>  var num = 10;<br>  alert(num.toString()); // “10”<br>  alert(num.toString(2)); // “1010”<br>  alert(num.toString(8)); // “12”<br>  alert(num.toString(10)); // “10”<br>  alert(num.toString(16)); // “a”</p>
-</li>
-<li><h4 id="在不知道要转换的值是不是-null-或-undefined-的情况下，还可以使用转型函数-String-，这个函数能够将任何类型的值转换为字符串。"><a href="#在不知道要转换的值是不是-null-或-undefined-的情况下，还可以使用转型函数-String-，这个函数能够将任何类型的值转换为字符串。" class="headerlink" title="在不知道要转换的值是不是 null 或 undefined 的情况下，还可以使用转型函数 String() ，这个函数能够将任何类型的值转换为字符串。"></a>在不知道要转换的值是不是 null 或 undefined 的情况下，还可以使用转型函数 String() ，这个函数能够将任何类型的值转换为字符串。</h4><pre><code>  toString() 方法，则调用该方法（没有参数）并返回相应的结果；
-  null ，则返回 &quot;null&quot; ；
-  undefined ，则返回 &quot;undefined&quot; 。
+<h2 id="5-String-类型"><a href="#5-String-类型" class="headerlink" title="5.String 类型"></a>5.String 类型</h2><ul>
+<li>String 类型用于表示由零或多个 16 位 Unicode 字符组成的字符序列，即字符串。</li>
+</ul>
+<h3 id="字符串的转换"><a href="#字符串的转换" class="headerlink" title="字符串的转换"></a>字符串的转换</h3><ul>
+<li><h4 id="要把一个值转换为一个字符串有两种方式。第一种是使用几乎每个值都有的toString-方法"><a href="#要把一个值转换为一个字符串有两种方式。第一种是使用几乎每个值都有的toString-方法" class="headerlink" title="要把一个值转换为一个字符串有两种方式。第一种是使用几乎每个值都有的toString() 方法"></a>要把一个值转换为一个字符串有两种方式。第一种是使用几乎每个值都有的toString() 方法</h4><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var <span class="attr">age</span> = <span class="number">11</span>;</span><br><span class="line">var <span class="attr">ageAsString</span> = age.<span class="built_in">toString</span>(); // 字符<span class="string">"11"</span></span><br><span class="line">var <span class="attr">found</span> = <span class="literal">true</span>;</span><br><span class="line">var <span class="attr">foundAsString</span> = found.<span class="built_in">toString</span>(); // 字符串<span class="string">"true"</span></span><br></pre></td></tr></table></figure>
 
-var value1 = 10;
-var value2 = true;
-var value3 = null;
-var value4;
-alert(String(value1)); // &quot;10&quot;
-alert(String(value2)); // &quot;true&quot;
-alert(String(value3)); // &quot;null&quot;
-alert(String(value4)); // &quot;undefined&quot;</code></pre></li>
+</li>
+</ul>
+<blockquote>
+<p>数值、布尔值、对象和字符串值（没错，每个字符串也都有一个 toString() 方法，该方法返回字<br>符串的一个副本）都有 toString() 方法。但 null 和 undefined 值没有这个方法。</p>
+<ul>
+<li>多数情况下，调用 toString() 方法不必传递参数。但是，在调用数值的 toString() 方法时，可<br> 以传递一个参数：输出数值的基数。</li>
+</ul>
+</blockquote>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var num = <span class="number">10</span><span class="comment">;</span></span><br><span class="line">alert(<span class="name">num</span>.toString())<span class="comment">; // "10"</span></span><br><span class="line">alert(<span class="name">num</span>.toString(<span class="number">2</span>))<span class="comment">; // "1010"</span></span><br><span class="line">alert(<span class="name">num</span>.toString(<span class="number">8</span>))<span class="comment">; // "12"</span></span><br><span class="line">alert(<span class="name">num</span>.toString(<span class="number">10</span>))<span class="comment">; // "10"</span></span><br><span class="line">alert(<span class="name">num</span>.toString(<span class="number">16</span>))<span class="comment">; // "a"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h4 id="在不知道要转换的值是不是-null-或-undefined-的情况下，还可以使用转型函数-String-，这个函数能够将任何类型的值转换为字符串。"><a href="#在不知道要转换的值是不是-null-或-undefined-的情况下，还可以使用转型函数-String-，这个函数能够将任何类型的值转换为字符串。" class="headerlink" title="在不知道要转换的值是不是 null 或 undefined 的情况下，还可以使用转型函数 String() ，这个函数能够将任何类型的值转换为字符串。"></a>在不知道要转换的值是不是 null 或 undefined 的情况下，还可以使用转型函数 String() ，这个函数能够将任何类型的值转换为字符串。</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  toString() 方法，则调用该方法（没有参数）并返回相应的结果；</span><br><span class="line">  <span class="literal">null</span> ，则返回 <span class="string">"null"</span> ；</span><br><span class="line">  <span class="literal">undefined</span> ，则返回 <span class="string">"undefined"</span> 。</span><br><span class="line"><span class="keyword">var</span> value1 = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">var</span> value2 = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">var</span> value3 = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">var</span> value4;</span><br><span class="line">alert(<span class="built_in">String</span>(value1)); <span class="comment">// "10"</span></span><br><span class="line">alert(<span class="built_in">String</span>(value2)); <span class="comment">// "true"</span></span><br><span class="line">alert(<span class="built_in">String</span>(value3)); <span class="comment">// "null"</span></span><br><span class="line">alert(<span class="built_in">String</span>(value4)); <span class="comment">// "undefined"</span></span><br></pre></td></tr></table></figure>
+
+</li>
 </ul>
 <hr>
 <blockquote>
 <h2 id="6-Object-类型"><a href="#6-Object-类型" class="headerlink" title="6.Object 类型"></a>6.Object 类型</h2><pre><code>ECMAScript 中的对象其实就是一组数据和功能的集合。对象可以通过执行 new 操作符后跟要创建
-的对象类型的名称来创建。而创建 Object 类型的实例并为其添加属性和（或）方法，就可以创建自定
-义对象，如下所示：
-var o = new Object();</code></pre></blockquote>
-<h4 id="Object-类型是创建-Object-的实例的基础。换句话说Object-类型所具有的任何属性和方法也同样存在于更具体的对象中。"><a href="#Object-类型是创建-Object-的实例的基础。换句话说Object-类型所具有的任何属性和方法也同样存在于更具体的对象中。" class="headerlink" title="Object 类型是创建 Object 的实例的基础。换句话说Object 类型所具有的任何属性和方法也同样存在于更具体的对象中。"></a>Object 类型是创建 Object 的实例的基础。换句话说Object 类型所具有的任何属性和方法也同样存在于更具体的对象中。</h4><pre><code>Object 的每个实例都具有下列属性和方法。</code></pre><ul>
+的对象类型的名称来创建。而创建 Object 类型的实例并为其添加属性和（或）方法，就可以创建
+自定义对象，如下所示：</code></pre><ul>
+<li>var o = new Object();</li>
+</ul>
+</blockquote>
+<h4 id="Object-类型是创建-Object-的实例的基础。换句话说Object-类型所具有的任何属性和方法也同样存在于更具体的对象中。"><a href="#Object-类型是创建-Object-的实例的基础。换句话说Object-类型所具有的任何属性和方法也同样存在于更具体的对象中。" class="headerlink" title="Object 类型是创建 Object 的实例的基础。换句话说Object 类型所具有的任何属性和方法也同样存在于更具体的对象中。"></a>Object 类型是创建 Object 的实例的基础。换句话说Object 类型所具有的任何属性和方法也同样存在于更具体的对象中。</h4><h3 id="Object-的每个实例都具有下列属性和方法。"><a href="#Object-的每个实例都具有下列属性和方法。" class="headerlink" title="Object 的每个实例都具有下列属性和方法。"></a>Object 的每个实例都具有下列属性和方法。</h3><ul>
 <li>constructor(构造函数) ：保存着用于创建当前对象的函数。</li>
 <li>hasOwnProperty(propertyName) ：用于检查给定的属性在当前对象实例中（而不是在实例<br>的原型中）是否存在。作为参数的属性名（ propertyName ）必须以字符串形式指定（例<br>如： o.hasOwnProperty(“name”) ）。</li>
 <li>isPrototypeOf(object) ：用于检查传入的对象是否是传入对象的原型</li>
@@ -121,7 +129,7 @@ var o = new Object();</code></pre></blockquote>
 <li>toString() ：返回对象的字符串形式。</li>
 <li>valueOf() ：返回对象的字符串、数值或布尔值形式。通常与 toString() 方法的返回值<br>相同。</li>
 </ul>
-<h2 id="一元操作符"><a href="#一元操作符" class="headerlink" title="一元操作符"></a>一元操作符</h2><pre><code>一元操作符除了对number进行操作运算外，还可以对字符串，boolean等进行操作</code></pre><ul>
+<h2 id="一元操作符"><a href="#一元操作符" class="headerlink" title="一元操作符"></a>一元操作符</h2><h3 id="一元操作符除了对number进行操作运算外，还可以对字符串，boolean等进行操作"><a href="#一元操作符除了对number进行操作运算外，还可以对字符串，boolean等进行操作" class="headerlink" title="一元操作符除了对number进行操作运算外，还可以对字符串，boolean等进行操作"></a>一元操作符除了对number进行操作运算外，还可以对字符串，boolean等进行操作</h3><ul>
 <li>应用于包含有效数字字符的字符串时，先将其转换为数字值，再执行加减操作。字符串变量变成数值变量。</li>
 <li>应用于不包含有效数字字符的字符串时，将变量的值设置为 NaN</li>
 <li>应用于boolean时将true转换为1，false为0参与运算.</li>
