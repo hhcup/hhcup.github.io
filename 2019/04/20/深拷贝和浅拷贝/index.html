@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="记录和分享知识"><title>实现一个简单的深拷贝？ | Steak</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">实现一个简单的深拷贝？</h1><a id="logo" href="/.">Steak</a><p class="description">steak的个人博客</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">实现一个简单的深拷贝？</h1><div class="post-meta">Apr 20, 2019<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><pre><code>我在刚学习js的数组api部分的时候，有时会发现对数组进行排序或替换某个元素后，我想
+把数组和排序后的数组同时打印出来进行比较，但是每次我这样做的时候打印的结果总是两
+个一模一样排序好的数组。what？于是我习惯性的在数组排序前使用另一个新的变量接受数
+组，但打印结果还是一样，我一度的百思不得其解。后来我发现是我忽视了js变量存储方式，
+导致我用错误的方法去复制一个数组，这里我就根据自己的理解，实现简单的深拷贝函数</code></pre><h1 id="实现一个深拷贝函数"><a href="#实现一个深拷贝函数" class="headerlink" title="实现一个深拷贝函数"></a>实现一个深拷贝函数</h1><blockquote>
+<p>  在实现深拷贝函数之前，我们应当理解JavaScript的变量储存的方式以及不同数据类型的特点。</p>
+</blockquote>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
+<li><h3 id="1-基本数据类型"><a href="#1-基本数据类型" class="headerlink" title="1.基本数据类型"></a>1.基本数据类型</h3><ul>
+<li>1.number    数字</li>
+<li>2.string    字符串</li>
+<li>3.boolean   布尔类型</li>
+<li>4.undefined 未定义（变量声明后未赋值）</li>
+<li>5.null      空（派生自undefined）</li>
+<li>6.symbol    符号</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意：</p>
+<ul>
+<li>string 、number 、boolean 和 null undefined 这五种类型统称为原始类型（Primitive），<br>表示不能再细分下去的基本类型;</li>
+<li>symbol是ES6中新增的数据类型，symbol 表示独一无二的值，通过 Symbol 函数调用生成，由于<br>生成的 symbol 值为原始类型，所以 Symbol 函数不能使用new 调用；</li>
+<li>null 和 undefined 通常被认为是特殊值，这两种类型的值唯一，就是其本身。</li>
+<li>null派生自undefined,console.log(undefined==null)结果为true。</li>
+<li>null 使用typeof检测结果是 object</li>
+</ul>
+</blockquote>
+<ul>
+<li><h3 id="2-引用数据类型"><a href="#2-引用数据类型" class="headerlink" title="2.引用数据类型"></a>2.引用数据类型</h3><ul>
+<li>1.object    对象（万物起源object）</li>
+<li>2.function  函数</li>
+<li>3.array     数组<blockquote>
+<p>JavaScript中所有的引用数据类型都是对象，对象在逻辑上是属性的无序集合，是存放各种值的容器。<br>对象值存储的是引用地址，所以和基本类型值不可变的特性不同，对象值是可变的。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据存储方式"><a href="#数据存储方式" class="headerlink" title="数据存储方式"></a>数据存储方式</h2><h3 id="1-基础数据类型"><a href="#1-基础数据类型" class="headerlink" title="1.基础数据类型"></a>1.基础数据类型</h3><pre><code>上面说过，基础数据类型是不能再被细分下去的类型。基础数据类型存放在栈内存中，以&apos;变量名-值&apos;
+的形式存放</code></pre><figure class="highlight ebnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">var a</span>=1;</span><br><span class="line"><span class="attribute">var b</span>=a+1;</span><br><span class="line"><span class="attribute">var c</span>=<span class="string">'小明'</span>;</span><br></pre></td></tr></table></figure>
+
+<pre><code>在我们声明基本数据类型的变量时，js自动为我们在内存中开辟了空间，来存放我们的变量和对应的值.
+当我们改变一个变量的时候，实际上改变的是其对应的val，同样的如果我们如果var b=a；实际上是系
+统先在内存中开辟一个新的空间用来存放吧，并将a视为其对应的val，赋予b，因此在a改变的时候，b并
+不会受到影响，因为在赋值完成后两者就没有任何关系了。这我们可以理解为a有张试卷，此时复印了一张
+给了b，a后来在自己的试卷上更改任何东西，都不会影响到b。</code></pre><p><img src="/img/j.png" alt="blockchain" title="基础数据类型"></p>
+<h3 id="2-引用数据类型-1"><a href="#2-引用数据类型-1" class="headerlink" title="2.引用数据类型"></a>2.引用数据类型</h3><pre><code>引用数据类型不同于基础数据类型，它存放在堆内存当中，在声明一个引用数据类型时，在栈内存中开辟
+空间储存其变量名name，但此时val中储存的并不是它的值，而是一个地址（指针）。而具体的值则存放
+在堆内存中，引用数据类型变量可以根据栈内存中的地址（指针）找到堆内存中存放的数据位置并使用。</code></pre><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">var</span> obj=&#123;</span><br><span class="line">    name:<span class="string">'张三'</span>,</span><br><span class="line">    age:<span class="number">12</span>,</span><br><span class="line">    sex:<span class="string">'男'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">var</span> obj1=obj</span><br></pre></td></tr></table></figure>
+
+<pre><code>在声明obj时，obj的名字存放在栈内存中，其对应的值则被放到的堆内存中存储，此时栈内存中obj的val
+存放的是地址。在我们声明了obj1并将obj赋值给obj1时，obj1拿到的实际上只是一个地址（地址）,其对
+应的值实质上还是堆内存中存放的数据，和obj共用。所以当我们修改obj或obj1中的属性时，修改的是两
+者共用的堆内存中的数据，这也是为什么在对数组排序后原数组中元素顺序也会改变的原因。而我们在对一
+对数组或对象进行比较时，实际上比较的是两者的地址。</code></pre><p><img src="/img/yin.png" alt="blockchain" title="引用数据类型"></p>
+<hr>
+<h2 id="尝试实现深拷贝"><a href="#尝试实现深拷贝" class="headerlink" title="尝试实现深拷贝"></a>尝试实现深拷贝</h2><pre><code>在JavaScript中，{}代表了开辟了一个内存空间，console.log({}=={}) //false，what？为什么会这样呢？
+在上面的例子中，两个{}{}之间没有关联，两者是独立开辟的空间，上面说过引用数据类型进行比较实际上是在
+比较两者的储存地址，因此{}和{}虽然内容都为空，但是两者在堆内存中开辟的地址不同。基于这个原理，我们
+就可以设计自己的深拷贝函数了！</code></pre><h3 id="1-JSON-parse-JSON-stringify-捷径版"><a href="#1-JSON-parse-JSON-stringify-捷径版" class="headerlink" title="1.JSON.parse(JSON.stringify()); 捷径版"></a>1.JSON.parse(JSON.stringify()); 捷径版</h3><figure class="highlight sqf"><table><tr><td class="code"><pre><span class="line">var obj=&#123;</span><br><span class="line">        <span class="built_in">name</span>:<span class="string">'张三'</span>,</span><br><span class="line">        age:<span class="number">14</span></span><br><span class="line">    &#125;</span><br><span class="line">    var obj1=obj;</span><br><span class="line">    obj1.<span class="built_in">name</span>=<span class="string">'李四'</span>;</span><br><span class="line">    console.<span class="built_in">log</span>(obj.<span class="built_in">name</span>);     <span class="comment">//李四</span></span><br><span class="line">    console.<span class="built_in">log</span>(obj1.<span class="built_in">name</span>);    <span class="comment">//李四</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj=&#123;</span><br><span class="line">       name:<span class="string">'张三'</span>,</span><br><span class="line">       age:<span class="number">14</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">var</span> obj2=<span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(obj));</span><br><span class="line">   obj2.name=<span class="string">'王五'</span>;</span><br><span class="line">   <span class="built_in">console</span>.log(obj.name);     <span class="comment">//张三</span></span><br><span class="line">   <span class="built_in">console</span>.log(obj2.name);    <span class="comment">//王五</span></span><br></pre></td></tr></table></figure>
+
+<pre><code>从上面的代码中我们可以看出，在使用了JSON.parse(JSON.stringify())方法后，我们成功的将obj拷贝
+出了一份独立的个体：obj2，且在我们改变obj2里的name后，obj中的name并没有变化。Yes！我们好像成
+功了！但是我们还不能高兴的太早，因为这种方法虽然简单好用，只需要调用JavaScript的API就可以实现，
+但是这种方法有着一些缺陷：</code></pre><ul>
+<li><p>1.不能复制function、正则、Symbol</p>
+</li>
+<li><p>2.循环引用报错</p>
+</li>
+<li><p>3.相同的引用会被重复复制</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj=&#123;</span><br><span class="line">        reg : <span class="regexp">/^asd$/</span>,</span><br><span class="line">        name:<span class="string">'张三'</span>,</span><br><span class="line">        age:<span class="number">14</span>,</span><br><span class="line">        say:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'我是张三'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">obj.obj=obj  <span class="comment">//内存溢出</span></span><br><span class="line"><span class="keyword">var</span> obj1=<span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(obj));</span><br><span class="line">obj1.say();     <span class="comment">//error</span></span><br><span class="line"><span class="built_in">console</span>.log(reg);  <span class="comment">//&#123;&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>由此可见，虽然用JSON.parse(JSON.stringify())的方法去深拷贝一个对象在通常的时候非常的<br>好用和便捷，但是我们应当知道他的一些局限性，并在使用的时候去规避这些可能出现的错误。</p>
+</li>
+</ul>
+<h3 id="2-循环遍历对象方法-基础版"><a href="#2-循环遍历对象方法-基础版" class="headerlink" title="2.循环遍历对象方法 基础版"></a>2.循环遍历对象方法 基础版</h3><pre><code>既然捷径走不通，那我们干脆手动的自己实现一个深拷贝吧！怎么把基础类型的数据从对象中拿出来并赋
+予新对象呢？这就可以通过循环遍历对象，将遍历到的数据一一拿出来并放到新的对象里</code></pre><h3 id="需求："><a href="#需求：" class="headerlink" title="需求："></a>需求：</h3><ul>
+<li><p>1.保证拷贝的新对象和原对象的地址不同</p>
+</li>
+<li><p>2.自动识别对象类型是数组还是对象</p>
+</li>
+<li><p>3.将原对象中的值拿出来，复制到新对象或数组里</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">var</span> obj=&#123;</span><br><span class="line">        name:<span class="string">'张三'</span>,</span><br><span class="line">        age:<span class="number">14</span>,</span><br><span class="line">        say:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'我是张三'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> obj1=deepclone(obj);</span><br><span class="line">    obj1.name=<span class="string">'李四'</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(obj.name);     <span class="comment">//张三</span></span><br><span class="line">    <span class="built_in">console</span>.log(obj1.name);    <span class="comment">//李四</span></span><br><span class="line">    obj1.say();                <span class="comment">//我是张三</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">deepclone</span>(<span class="params">obj</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> newObj = &#123;&#125;;</span><br><span class="line">        <span class="keyword">for</span>(k <span class="keyword">in</span> obj)&#123;</span><br><span class="line">            newObj[k] = obj[k];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newObj;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>  WoW！我们好像成功实现了深拷贝！！！函数可以正常的使用，对obj1的name进行更改也没有影响到obj。<br>  我们还不能高兴的太早，实际上这种拷贝只能算是浅拷贝，因为这种方法只能复制一层的对象数据，假如<br>  obj里面有个对象shool，这个对象里面还有day等对象，你会发现通过这种方式拷贝出来的obj1改变了<br>  school，obj中的school同样的会发生改变！</p>
+</li>
+</ul>
+<h3 id="3-递归遍历并拷贝-升级版"><a href="#3-递归遍历并拷贝-升级版" class="headerlink" title="3.递归遍历并拷贝 升级版"></a>3.递归遍历并拷贝 升级版</h3><pre><code>对于对象中包含对象的情况，怎么快速有效的将所有的对象都遍历出来并复制呢？你首先应该想到的方法一
+定是递归！递归用来处理这种无限树状结构问题相当的方便！于是我们可以利用递归对上面的代码做一些优
+化升级：</code></pre><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">var</span> obj=&#123;</span><br><span class="line">        name:<span class="string">'张三'</span>,</span><br><span class="line">        age:<span class="number">14</span>,</span><br><span class="line">        school:&#123;</span><br><span class="line">            lshool:<span class="string">'红太阳小学'</span>,</span><br><span class="line">            mschool:<span class="string">'红旗中学'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> obj1=deepclone(obj);</span><br><span class="line">    obj1.school.mschool=<span class="string">'火箭中学'</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(obj.school.mschool);    <span class="comment">//红旗中学</span></span><br><span class="line">    <span class="built_in">console</span>.log(obj1.school.mschool);    <span class="comment">//火箭中学</span></span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">deepclone</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> newObj = &#123;&#125;;</span><br><span class="line">        <span class="keyword">if</span> (obj <span class="keyword">instanceof</span> <span class="built_in">Array</span>) &#123;</span><br><span class="line">            newObj = [];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (key <span class="keyword">in</span> obj) &#123;</span><br><span class="line">            newObj[key] = (<span class="keyword">typeof</span> (obj[key]) == <span class="string">'object'</span> ? deepclone(obj[key]) : obj[key]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newObj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code>递归Yes！！！从结果来看递归很好的帮我们处理了对象的深拷贝问题，到这里这个方法是不是就是完美了呢？
+不！这种方法实际上也存在一个致命的缺点：当obj中的两个或以上的key引用的是同一个对象时，拷贝出来的
+obj1里的key是独立的！也就是说，递归拷贝法在进行对象遍历时，并没有把相同的对象统一拷贝，而是又进
+入这个对象将其中的基本数据拷贝出来，这就导致了拷贝出来的obj1中引用同一个对象的多个key彼此独立，这
+与obj的结构是不同的！！！</code></pre><ul>
+<li>对于这样的结果，我们只能单处的处理。怎么让函数主动判断当前拷贝的key是够已经拷贝过了呢？这就要引入一个<br>储存遍历结果的容器，每次遍历obj中的key时判断容器中是否已经存在了这个key的val，如果存在就不再进行重复<br>拷贝了。<figure class="highlight plain"><figcaption><span>steak</span></figcaption><table><tr><td class="code"><pre><span class="line">    name:&apos;steak&apos;,</span><br><span class="line">    size:10</span><br><span class="line">&#125;</span><br><span class="line"> var obj=&#123;</span><br><span class="line">        name:&apos;张三&apos;,</span><br><span class="line">        age:14,</span><br><span class="line">        school:&#123;</span><br><span class="line">            lshool:&apos;红太阳小学&apos;,</span><br><span class="line">            mschool:&apos;红旗中学&apos;</span><br><span class="line">        &#125;,</span><br><span class="line">        steak:steak,</span><br><span class="line">        steal:steak</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     var obj1=dclone(obj);</span><br><span class="line">     obj.steak1.name=beefsteak;</span><br><span class="line"></span><br><span class="line">     console.log(obj.steak.name);   //beefsteak</span><br><span class="line">     console.log(obj.steak1.name);  //beefsteak</span><br><span class="line">     console.log(obj1.steak.name);  //beefsteak</span><br><span class="line">     console.log(obj1.steak1.name); //beefsteak</span><br><span class="line"></span><br><span class="line">function dclone(el,map=new Map())&#123;</span><br><span class="line">        if(typeof(el)==&apos;object&apos;)&#123;</span><br><span class="line">            var newEl=(el instanceof Array)?[]:&#123;&#125;;</span><br><span class="line">            if(map.get(el))&#123;</span><br><span class="line">                return map.get(el);</span><br><span class="line">            &#125;</span><br><span class="line">            map.set(el,newEl);</span><br><span class="line">            for(var key in el)&#123;</span><br><span class="line">                newEl[key]=dclone(el[key],map);</span><br><span class="line">            &#125;</span><br><span class="line">            return newEl;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            return el;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><pre><code>至此,我们就完成了一个简单的深拷贝函数,虽然我们做了一些优化和特殊情况的处理，但是这个函数
+依旧是不完美的，至少函数的深拷贝等还未包含，但手动的实现深拷贝函数可以更好的帮助我们理解
+JavaScript的数据类型以及编程的一些基础知识。。但在日常的工作中，使用JSON.stringify()搭
+配JSON.parse()实际上已经可以解决大多数的问题了，我们同样可以使用第三方的库来实现更严谨的
+深拷贝比如JQuery中的extend，lodash等，毕竟站在前人的肩膀上我们可以看得更远。</code></pre></div><div class="tags"><a href="/tags/知识总结/">知识总结</a></div><div class="post-nav"><a class="next" href="/2019/03/02/this的总结/">this的指向问题</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/知识总结/" style="font-size: 15px;">知识总结</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/深拷贝和浅拷贝/">实现一个简单的深拷贝？</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/this的总结/">this的指向问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/01/js数据类型及转换/">js数据类型及转换问题</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Steak.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
